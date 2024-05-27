@@ -1,15 +1,13 @@
 public class No {
-    public static final int m=2;
+    public static final int n=2;
     private int vInfo[];
-    private int vPos[];
     private No vLig[];
     private int tl;
 
     public No()
     {
-        vInfo = new int[2*m+1];
-        vPos = new int[2*m+1];
-        vLig = new No[2*m+2];
+        vInfo = new int[2*n+1];
+        vLig = new No[2*n+2];
         tl=0;
     }
 
@@ -17,7 +15,6 @@ public class No {
     {
         this();
         vInfo[0] = info;
-        vPos[0] = posArq;
         tl = 1;
     }
 
@@ -35,7 +32,6 @@ public class No {
         for(int i=tl; i>pos; i--)
         {
             vInfo[i] = vInfo[i-1];
-            vPos[i] = vPos[i-1];
             vLig[i] = vLig[i-1];
         }
     }
@@ -51,14 +47,6 @@ public class No {
 
     public void setvInfo(int p, int info) {
         vInfo[p] = info;
-    }
-
-    public int getvPos(int p) {
-        return vPos[p];
-    }
-
-    public void setvPos(int p, int posArq) {
-        vPos[p] = posArq;
     }
 
     public No getvLig(int p) {

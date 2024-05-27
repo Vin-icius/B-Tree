@@ -36,42 +36,38 @@ public class BplusTree {
     {
         No cx1 = new No();
         No cx2 = new No();
-        for(int i=0; i<No.m; i++)
+        for(int i=0; i<No.n; i++)
         {
             cx1.setvInfo(i, folha.getvInfo(i));
-            cx1.setvPos(i, folha.getvPos(i));
             cx1.setvLig(i, folha.getvLig(i));
         }
-        cx1.setvLig(No.m, folha.getvLig(No.m));
-        cx1.setTl(No.m);
+        cx1.setvLig(No.n, folha.getvLig(No.n));
+        cx1.setTl(No.n);
 
-        for(int i=No.m+1; i<No.m*2+1; i++)
+        for(int i=No.n+1; i<No.n*2+1; i++)
         {
-            cx2.setvInfo(i-(No.m+1), folha.getvInfo(i));
-            cx2.setvPos(i-(No.m+1), folha.getvPos(i));
-            cx2.setvLig(i-(No.m+1), folha.getvLig(i));
+            cx2.setvInfo(i-(No.n+1), folha.getvInfo(i));
+            cx2.setvLig(i-(No.n+1), folha.getvLig(i));
         }
-        cx2.setvLig(No.m, folha.getvLig(No.m*2+1));
-        cx2.setTl(No.m);
+        cx2.setvLig(No.n, folha.getvLig(No.n*2+1));
+        cx2.setTl(No.n);
 
         if(folha == pai)
         {
-            folha.setvInfo(0, folha.getvInfo(No.m));
-            folha.setvPos(0, folha.getvPos(No.m));
+            folha.setvInfo(0, folha.getvInfo(No.n));
             folha.setTl(1);
             folha.setvLig(0, cx1);
             folha.setvLig(1, cx2);
         }
         else
         {
-            int pos = pai.procurarPosicao(folha.getvInfo(No.m));
+            int pos = pai.procurarPosicao(folha.getvInfo(No.n));
             pai.remanejar(pos);
-            pai.setvInfo(pos,folha.getvInfo(No.m));
-            pai.setvPos(pos,folha.getvPos(No.m));
+            pai.setvInfo(pos,folha.getvInfo(No.n));
             pai.setTl(pai.getTl()+1);
             pai.setvLig(pos,cx1);
             pai.setvLig(pos+1,cx2);
-            if(pai.getTl()>2*No.m)
+            if(pai.getTl()>2*No.n)
             {
                 folha = pai;
                 pai = localizarPai(folha,folha.getvInfo(0));
@@ -92,9 +88,8 @@ public class BplusTree {
             pos = folha.procurarPosicao(info);
             folha.remanejar(pos);
             folha.setvInfo(pos, info);
-            folha.setvPos(pos, posArq);
             folha.setTl(folha.getTl()+1);
-            if(folha.getTl() > 2*No.m)
+            if(folha.getTl() > 2*No.n)
             {
                 pai = localizarPai(folha, info);
                 split(folha, pai);
@@ -162,19 +157,17 @@ public class BplusTree {
         if(posPai+1<=pai.getTl())
             irmaD = pai.getvLig(posPai+1);
 
-        if(irmaE!=null && irmaE.getTl()>No.m)
+        if(irmaE!=null && irmaE.getTl()>No.n)
         {
             folha.remanejar(0);
             folha.setvInfo(0, pai.getvInfo(posPai-1));
-            folha.setvPos(0, pai.getvPos(posPai-1));
             folha.setTl(folha.getTl()+1);
             pai.setvInfo(posPai-1, irmaE.getvInfo(irmaE.getTl()-1));
-            pai.setvPos(posPai-1, irmaE.getvPos(irmaE.getTl()-1));
             folha.setvLig(0, irmaE.getvLig(irmaE.getTl()));
             irmaE.setTl(irmaE.getTl()-1);
         }
         else
-        if(irmaD!=null && irmaD.getTl()>No.m)
+        if(irmaD!=null && irmaD.getTl()>No.n)
         {
 
         }
@@ -183,7 +176,6 @@ public class BplusTree {
             if(irmaE!=null)
             {
                 irmaE.setvInfo(irmaE.getTl(), pai.getvInfo(posPai-1));
-                irmaE.setvPos(irmaE.getTl(), pai.getvPos(posPai-1));
                 irmaE.setTl(irmaE.getTl()+1);
                 pai.remanejarExclusao(posPai-1);
                 pai.setTl(pai.getTl()-1);
@@ -191,7 +183,6 @@ public class BplusTree {
                 for(int i=0; i<folha.getTl(); i++)
                 {
                     irmaE.setvInfo(irmaE.getTl(), folha.getvInfo(i));
-                    irmaE.setvPos(irmaE.getTl(), folha.getvPos(i));
                     irmaE.setvLig(irmaE.getTl(), folha.getvLig(i));
                     irmaE.setTl(irmaE.getTl()+1);
                 }
@@ -210,7 +201,7 @@ public class BplusTree {
                     raiz=irmaD;
             }
             else
-            if(pai!=raiz && pai.getTl()<No.m)
+            if(pai!=raiz && pai.getTl()<No.n)
             {
                 folha = pai;
                 redistribuir_concatenar(folha);
@@ -232,17 +223,15 @@ public class BplusTree {
             {
                 subE = localizarSubE(no, pos);
                 subD = localizarSubD(no, pos+1);
-                if(subE.getTl()>No.m || subD.getTl()==No.m)
+                if(subE.getTl()>No.n || subD.getTl()==No.n)
                 {
                     no.setvInfo(pos, subE.getvInfo(subE.getTl()-1));
-                    no.setvPos(pos, subE.getvPos(subE.getTl()-1));
                     folha=subE;
                     pos=subE.getTl()-1;
                 }
                 else
                 {
                     no.setvInfo(pos, subD.getvInfo(0));
-                    no.setvPos(pos, subD.getvPos(0));
                     folha=subD;
                     pos=0;
                 }
@@ -256,7 +245,7 @@ public class BplusTree {
             if(raiz==folha && folha.getTl()==0)
                 raiz = null;
             else
-            if(raiz!=folha && folha.getTl()<No.m)
+            if(raiz!=folha && folha.getTl()<No.n)
                 redistribuir_concatenar(folha);
         }
     }
