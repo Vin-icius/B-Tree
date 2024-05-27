@@ -1,24 +1,24 @@
 public class No {
-    public static final int n=2;
-    private int vInfo[];
+    public static final int n=3;
+    private No vInfo[];
     private No vLig[];
     private int tl;
 
     public No()
     {
-        vInfo = new int[2*n+1];
-        vLig = new No[2*n+2];
+        vInfo = new No[n/2];
+        vLig = new No[n/2+1];
         tl=0;
     }
 
-    public No(int info, int posArq)
+    public No(No info, int posArq)
     {
         this();
         vInfo[0] = info;
         tl = 1;
     }
 
-    public int procurarPosicao(int info)
+    public int procurarPosicao(No info)
     {
         int pos=0;
         while(pos<tl && info>vInfo[pos])
@@ -41,11 +41,11 @@ public class No {
         //////
     }
 
-    public int getvInfo(int p) {
+    public No getvInfo(int p) {
         return vInfo[p];
     }
 
-    public void setvInfo(int p, int info) {
+    public void setvInfo(int p, No info) {
         vInfo[p] = info;
     }
 

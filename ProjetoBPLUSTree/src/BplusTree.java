@@ -76,7 +76,7 @@ public class BplusTree {
         }
     }
 
-    public void inserir(int info, int posArq)
+    public void inserir(No info, int posArq)
     {
         No folha,pai;
         int pos;
