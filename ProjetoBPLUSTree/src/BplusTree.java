@@ -157,7 +157,7 @@ public class BplusTree {
         if(posPai+1<=pai.getTl())
             irmaD = pai.getvLig(posPai+1);
 
-        if(irmaE!=null && irmaE.getTl()>No.m)
+        if(irmaE!=null && irmaE.getTl()>No.n)
         {
             folha.remanejar(0);
             folha.setvInfo(0, pai.getvInfo(posPai-1));
@@ -167,7 +167,7 @@ public class BplusTree {
             irmaE.setTl(irmaE.getTl()-1);
         }
         else
-        if(irmaD!=null && irmaD.getTl()>No.m)
+        if(irmaD!=null && irmaD.getTl()>No.n)
         {
 
         }
