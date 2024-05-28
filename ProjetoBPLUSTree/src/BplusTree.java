@@ -1,3 +1,4 @@
+import java.math.*;
 public class BplusTree {
     private No raiz;
 
@@ -36,31 +37,32 @@ public class BplusTree {
     {
         No cx1 = new No();
         No cx2 = new No();
-        for(int i=0; i<No.n; i++)
+        for(int i=0; i<No.n/2; i++)
         {
             cx1.setvInfo(i, folha.getvInfo(i));
             cx1.setvLig(i, folha.getvLig(i));
         }
-        cx1.setvLig(No.n, folha.getvLig(No.n));
-        cx1.setTl(No.n);
+        cx1.setvLig(No.n/2, folha.getvLig(No.n/2));
+        cx1.setTl(No.n/2);
 
-        for(int i=No.n+1; i<No.n*2+1; i++)
+        for(int i=No.n/2; i<=No.n-1; i++)
         {
-            cx2.setvInfo(i-(No.n+1), folha.getvInfo(i));
-            cx2.setvLig(i-(No.n+1), folha.getvLig(i));
+            cx2.setvInfo(i-(No.n/2), folha.getvInfo(i));
+            cx2.setvLig(i-(No.n/2), folha.getvLig(i));
         }
         cx2.setvLig(No.n, folha.getvLig(No.n*2+1));
         cx2.setTl(No.n);
 
         if(folha == pai)
         {
-            folha.setvInfo(0, folha.getvInfo(No.n));
+            folha.setvInfo(0, folha.getvInfo(No.n/2));
             folha.setTl(1);
             folha.setvLig(0, cx1);
             folha.setvLig(1, cx2);
         }
         else
         {
+            // ate aqui esta certo
             int pos = pai.procurarPosicao(folha.getvInfo(No.n));
             pai.remanejar(pos);
             pai.setvInfo(pos,folha.getvInfo(No.n));
@@ -78,23 +80,41 @@ public class BplusTree {
 
     public void inserir(int info, int posArq)
     {
-        No folha,pai;
+        No folha, pai;
         int pos;
-        if(raiz == null)
+
+        if(raiz==null){
             raiz = new No(info,posArq);
-        else
-        {
+        }
+        else{
             folha = navegarAteFolha(info);
             pos = folha.procurarPosicao(info);
             folha.remanejar(pos);
-            folha.setvInfo(pos, info);
+            folha.setvInfo(pos,info);
             folha.setTl(folha.getTl()+1);
-            if(folha.getTl() > 2*No.n)
-            {
-                pai = localizarPai(folha, info);
-                split(folha, pai);
+            if(folha.getTl()==No.n){
+                pai = localizarPai(folha,info);
+                split(folha,pai);
             }
         }
+
+//        No folha,pai;
+//        int pos;
+//        if(raiz == null)
+//            raiz = new No(info,posArq);
+//        else
+//        {
+//            folha = navegarAteFolha(info);
+//            pos = folha.procurarPosicao(info);
+//            folha.remanejar(pos);
+//            folha.setvInfo(pos, info);
+//            folha.setTl(folha.getTl()+1);
+//            if(folha.getTl() > 2*No.n)
+//            {
+//                pai = localizarPai(folha, info);
+//                split(folha, pai);
+//            }
+//        }
     }
 
     public void in_ordem()

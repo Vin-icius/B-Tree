@@ -1,13 +1,13 @@
 public class No {
-    public static final int n=2;
+    public static final int n=3;
     private int vInfo[];
     private No vLig[];
     private int tl;
 
     public No()
     {
-        vInfo = new int[2*n+1];
-        vLig = new No[2*n+2];
+        vInfo = new int[n-1];
+        vLig = new No[n];
         tl=0;
     }
 
