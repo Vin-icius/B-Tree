@@ -1,7 +1,8 @@
 public class No {
-    public static final int n=3;
+    public static int n=4;
     private int vInfo[];
     private No vLig[];
+    private No ant,prox;
     private int tl;
 
     public No()
@@ -28,7 +29,7 @@ public class No {
 
     public void remanejar(int pos)
     {
-        vLig[tl+1] = vLig[tl];
+        vLig[tl] = vLig[tl-1];
         for(int i=tl; i>pos; i--)
         {
             vInfo[i] = vInfo[i-1];
@@ -36,9 +37,12 @@ public class No {
         }
     }
 
-    public void remanejarExclusao(int pos)
-    {
-        //////
+    public void remanejarExclusao(int pos) {
+        for (int i = pos; i < this.tl - 1; i++) {
+            this.vInfo[i] = this.vInfo[i + 1];
+            this.vLig[i] = this.vLig[i + 1];
+        }
+        this.vLig[this.tl - 1] = this.vLig[this.tl];
     }
 
     public int getvInfo(int p) {
@@ -63,5 +67,21 @@ public class No {
 
     public void setTl(int tl) {
         this.tl = tl;
+    }
+
+    public No getAnt() {
+        return ant;
+    }
+
+    public void setAnt(No ant) {
+        this.ant = ant;
+    }
+
+    public No getProx() {
+        return prox;
+    }
+
+    public void setProx(No prox) {
+        this.prox = prox;
     }
 }
