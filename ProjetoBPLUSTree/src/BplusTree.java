@@ -19,6 +19,13 @@ public class BplusTree {
         return no;
     }
 
+    public void setOrdem(int n){
+        No.n=n;
+    }
+    private boolean isFolha(No nodo){
+        return nodo.getvLig(0)==null;
+    }
+
     private No localizarPai(No folha, int info)
     {
         int pos;
@@ -33,48 +40,24 @@ public class BplusTree {
         return pai;
     }
 
-    private void split(No folha, No pai)
-    {
-        No cx1 = new No();
-        No cx2 = new No();
-        for(int i=0; i<No.n/2; i++)
-        {
-            cx1.setvInfo(i, folha.getvInfo(i));
-            cx1.setvLig(i, folha.getvLig(i));
+    public void exibirFolhas(No raiz) {
+        if (raiz == null) {
+            return;
         }
-        cx1.setvLig(No.n/2, folha.getvLig(No.n/2));
-        cx1.setTl(No.n/2);
 
-        for(int i=No.n/2; i<=No.n-1; i++)
-        {
-            cx2.setvInfo(i-(No.n/2), folha.getvInfo(i));
-            cx2.setvLig(i-(No.n/2), folha.getvLig(i));
+        // Descer até a primeira folha
+        No folha = raiz;
+        while (folha.getvLig(0) != null) {
+            folha = folha.getvLig(0);
         }
-        cx2.setvLig(No.n, folha.getvLig(No.n*2+1));
-        cx2.setTl(No.n);
 
-        if(folha == pai)
-        {
-            folha.setvInfo(0, folha.getvInfo(No.n/2));
-            folha.setTl(1);
-            folha.setvLig(0, cx1);
-            folha.setvLig(1, cx2);
-        }
-        else
-        {
-            // ate aqui esta certo
-            int pos = pai.procurarPosicao(folha.getvInfo(No.n));
-            pai.remanejar(pos);
-            pai.setvInfo(pos,folha.getvInfo(No.n));
-            pai.setTl(pai.getTl()+1);
-            pai.setvLig(pos,cx1);
-            pai.setvLig(pos+1,cx2);
-            if(pai.getTl()>2*No.n)
-            {
-                folha = pai;
-                pai = localizarPai(folha,folha.getvInfo(0));
-                split(folha,pai);
+        // Percorrer as folhas a partir da primeira folha
+        while (folha != null) {
+            for (int i = 0; i < folha.getTl(); i++) {
+                System.out.print(folha.getvInfo(i) + " ");
             }
+            System.out.println(); // \n
+            folha = folha.getProx();
         }
     }
 
@@ -96,25 +79,81 @@ public class BplusTree {
                 pai = localizarPai(folha,info);
                 split(folha,pai);
             }
-        }
 
-//        No folha,pai;
-//        int pos;
-//        if(raiz == null)
-//            raiz = new No(info,posArq);
-//        else
-//        {
-//            folha = navegarAteFolha(info);
-//            pos = folha.procurarPosicao(info);
-//            folha.remanejar(pos);
-//            folha.setvInfo(pos, info);
-//            folha.setTl(folha.getTl()+1);
-//            if(folha.getTl() > 2*No.n)
-//            {
-//                pai = localizarPai(folha, info);
-//                split(folha, pai);
-//            }
-//        }
+            No novaFolha = folha;
+            No folhaAnterior = folha.getAnt();
+            if (folhaAnterior != null) {
+                folhaAnterior.setProx(novaFolha);
+                novaFolha.setAnt(folhaAnterior);
+            }
+            folha.setAnt(folhaAnterior);
+            folha.setProx(null);
+
+        }
+    }
+
+    private void split(No folha, No pai)
+    {
+        No cx1 = new No();
+        No cx2 = new No();
+        int n = No.n; // No.n é uma variável estática
+        int i=0;
+        int mid = (int) Math.ceil((double) n / 2);
+        int mid2 = (int) Math.ceil((double) n / 2) - 1;
+        int mid3 = (int) Math.ceil((double) (n - 1) / 2);
+
+        if (isFolha(folha)) {
+            for (i = 0; i < mid3; i++) {
+                cx1.setvInfo(i, folha.getvInfo(i));
+                cx1.setTl(cx1.getTl() + 1);
+            }
+
+            for (i = mid3; i < n; i++) {
+                cx2.setvInfo(i - mid3, folha.getvInfo(i));
+                cx2.setTl(cx2.getTl() + 1);
+            }
+        }
+        else {
+            for (i = 0; i < mid; i++) {
+                cx1.setvInfo(i,folha.getvInfo(i));
+                cx1.setvLig(i,folha.getvLig(i));
+                cx1.setTl(cx1.getTl() + 1);
+            }
+            cx1.setvLig(mid,folha.getvLig(mid));
+            mid2 = mid++;
+            for (i = mid; i < n; i++) {
+                cx2.setvInfo(i - (mid),folha.getvInfo(i));
+                cx2.setvLig(i - (mid), folha.getvLig(i));
+                cx2.setTl(cx2.getTl() + 1);
+            }
+            cx2.setvLig(i - mid, folha.getvLig(n));
+        }
+        if (folha == pai) {
+            folha.setvInfo(0, cx2.getvInfo(0));
+            folha.setTl(1);
+            folha.setvLig(0, cx1);
+            folha.setvLig(1, cx2);
+        }
+        else {
+            int pos = pai.procurarPosicao(folha.getvInfo(mid));
+            pai.remanejar(pos);
+            pai.setvInfo(pos, folha.getvInfo(mid));
+            pai.setTl(pai.getTl() + 1);
+            pai.setvLig(pos, cx1);
+            pai.setvLig(pos + 1, cx2);
+            if (pai.getvLig(0).getvLig(0) == null) {
+                for (int j = 0; j < pai.getTl(); j++) {
+                    pai.getvLig(j).setProx(pai.getvLig(j + 1));
+                    pai.getvLig(j + 1).setAnt(pai.getvLig(j));
+                }
+                pai.getvLig(pai.getTl()).setAnt(pai.getvLig(pai.getTl() - 1));
+            }
+            if (pai.getTl() > n - 1) {
+                folha = pai;
+                pai = localizarPai(folha, folha.getvInfo(mid));
+                split(folha, pai);
+            }
+        }
     }
 
     public void in_ordem()
@@ -189,7 +228,16 @@ public class BplusTree {
         else
         if(irmaD!=null && irmaD.getTl()>No.n)
         {
+            folha.setvInfo(folha.getTl(), pai.getvInfo(posPai));
+            folha.setTl(folha.getTl() + 1);
+            pai.setvInfo(posPai, irmaD.getvInfo(0));
 
+            for (int i = 1; i < irmaD.getTl(); i++) {
+                irmaD.setvInfo(i - 1, irmaD.getvInfo(i));
+                irmaD.setvLig(i - 1, irmaD.getvLig(i));
+            }
+            irmaD.setvLig(irmaD.getTl() - 1, irmaD.getvLig(irmaD.getTl()));
+            irmaD.setTl(irmaD.getTl() - 1);
         }
         else //concatenacao
         {
@@ -210,7 +258,18 @@ public class BplusTree {
             }
             else
             {
-
+                folha.setvInfo(folha.getTl(), pai.getvInfo(posPai));
+                folha.setTl(folha.getTl() + 1);
+                pai.remanejarExclusao(posPai);
+                pai.setTl(pai.getTl() - 1);
+                pai.setvLig(posPai, folha);
+                for (int i = 0; i < irmaD.getTl(); i++)
+                {
+                    folha.setvInfo(folha.getTl(), irmaD.getvInfo(i));
+                    folha.setvLig(folha.getTl(), irmaD.getvLig(i));
+                    folha.setTl(folha.getTl() + 1);
+                }
+                folha.setvLig(folha.getTl(), irmaD.getvLig(irmaD.getTl()));
             }
 
             if(pai==raiz && pai.getTl()==0)
